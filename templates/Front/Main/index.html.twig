@@ -1,6 +1,6 @@
 {% extends 'Front/layout.html.twig' %}
 
-{% block title %}AMF{% endblock %}
+{% block title %}Etre En Phase{% endblock %}
 
 {% block content %}
 
@@ -80,12 +80,12 @@
             {% endif %}
             <br><br><br><br>
             <hr>
-            <div class="img-holder" data-image="{{ asset('parallax/parallax.png') }}"></div>
-
+{#            <div class="img-holder" data-image="{{ asset('parallax/parallax.png') }}"></div>#}
 
 
 
         </div>
+
     </main>
 
 
@@ -93,7 +93,12 @@
 
 {% block js %}
     <script>
-        $('.img-holder').imageScroll();
+        $('.parallaxe').each(function (index){
+            $(this).data('image',$(this).attr('src') )
+            $(this).imageScroll();
+        })
+
+
 
     </script>
 

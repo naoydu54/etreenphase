@@ -184,7 +184,10 @@ a, a:hover, a:visited, a:active {
 
 .footer{
 
-    background-color: #cfaf94 !important;
+    /*background-color: #cfaf94 !important;*/
+    background: linear-gradient(
+            180deg
+            , rgba(163,178,149,1) 0%, rgba(163,178,149,1) 23%, rgba(163,178,149,0.896796218487395) 66%, rgba(163,178,149,0.6615021008403361) 99%) !important;
     margin-top : 5%;
 }
 
