@@ -1,0 +1,177 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block content %}
+    <main class="overflow-hidden">
+        <h2> Tutoriels et recettes</h2>
+
+        <div class="row">
+
+            <div class="col-md-3">
+                <div style=" width: 80%; margin-top: 30%; background-color: #cfaf94"
+                     class="jumbotron filtre overflow-auto">
+                    <center><h3 style="color: white">Filtres</h3></center>
+
+                    <div class="form-group">
+                        <select id="tutorial" class="form-control" name="tutorial" >
+                            <option selected>O</option>
+
+                            <option value="true">Tutoriels</option>
+                            <option value="false">Recettes</option>
+                            <option value="all">Tutoriels et recettes</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <select id="sugar"class="form-control" name="sugar" >
+                            <option selected>O</option>
+                            <option value="true">sucré</option>
+                            <option value="false">salé</option>
+                            <option value="all">sucré & salé</option>
+                        </select>
+                    </div>
+
+                    <center><h5 style="color: white">Ustensiles</h5></center>
+                        {% for product in productForTutorialAndRecipes  %}
+
+                            <div class="form-check">
+                                <input name="product" type="checkbox" class="form-check-input" data-id="{{ product.id }}" id="product">
+                                <label class="form-check-label" for="exampleCheck1">{{ product.name }}</label>
+                            </div>
+                        {% endfor %}
+
+
+
+                    <br>
+                </div>
+            </div>
+                    <div class="col-md-9">
+                        <div class="container">
+                            <div class="tutorial_and_recipe"></div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+    </main>
+
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        $.ajax({
+            url: Routing.generate('tutorial_and_recipe_ajax'),
+            type: 'POST',
+            // data: {data: dataForAjax},
+
+            success: function (data) {
+
+                $('.tutorial_and_recipe').html(data)
+
+            },
+            error: function (xhr) {
+                console.log('error')
+            }
+        });
+
+
+        var dataForAjax = {}
+
+        $('#sugar').change(function (){
+
+            dataForAjax['sugar'] = $(this).val();
+            console.log(dataForAjax)
+
+            $.ajax({
+                url: Routing.generate('tutorial_and_recipe_ajax'),
+                type: 'POST',
+                data: {data: dataForAjax},
+
+                success: function (data) {
+
+                    $('.tutorial_and_recipe').html(data)
+
+                },
+                error: function (xhr) {
+                    console.log('error')
+                }
+            });
+        })
+
+        $('#tutorial').change(function (){
+
+            dataForAjax['tutorial'] = $(this).val();
+            console.log(dataForAjax)
+
+            $.ajax({
+                url: Routing.generate('tutorial_and_recipe_ajax'),
+                type: 'POST',
+                data: {data: dataForAjax},
+
+                success: function (data) {
+
+                    $('.tutorial_and_recipe').html(data)
+
+                },
+                error: function (xhr) {
+                    console.log('error')
+                }
+            });
+        })
+
+        var dataProduct = []
+        $('input[name=\'product\']').click(function (){
+
+
+            if($(this).prop("checked") == true){
+                console.log("Checkbox is checked.");
+                dataProduct.push($(this).data('id'))
+
+            }
+            else if($(this).prop("checked") == false){
+                dataProduct.splice($.inArray($(this).data('id'), dataProduct), 1);
+
+            }
+            dataForAjax['products'] = dataProduct
+
+            $.ajax({
+                url: Routing.generate('tutorial_and_recipe_ajax'),
+                type: 'POST',
+                data: {data: dataForAjax},
+
+                success: function (data) {
+
+                    $('.tutorial_and_recipe').html(data)
+
+                },
+                error: function (xhr) {
+                    console.log('error')
+                }
+            });
+
+        })
+
+    </script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

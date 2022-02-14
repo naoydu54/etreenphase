@@ -1,0 +1,232 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}ajouter produit{% endblock %}
+
+{% block content %}
+
+    {% set routeName = app.request.attributes.get('_route') %}
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Produit
+                            / {{ routeName == 'admin_product_edit' ? 'Modification' : 'Ajout' }}</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ path('admin_main') }}">Accueil</a></li>
+                            <li class="breadcrumb-item"><a href="{{ path('admin_product_main') }}">Produit</a></li>
+                            <li class="breadcrumb-item active">{{ routeName == 'admin_product_edit' ? 'Modification' : 'Ajout' }}</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                {{ form_start(form) }}
+
+                <div class="row">
+
+                    <div class="col-md-9">
+
+                        <div class="form-group">
+                            {{ form_row(form.image) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_row(form.name) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_row(form.content) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_row(form.useAndMaintenance) }}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group" >
+                            {{ form_row(form.reference) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.available) }}
+                        </div>
+
+                        <div class="card" style="width: 18rem; height: 50%">
+                            <div style="height: 80%!important;" class="card-body">
+                                <h5 class="card-title">Menu produit</h5>
+
+
+                                <div class="form-group menu" style="height: 80%">
+                                    {{ form_row(form.menus) }}
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_row(form.files) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if configurable == 0 %}
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="bd-example bd-example-tabs">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                                             aria-orientation="vertical">
+                                            <a class="nav-link active show" id="v-pills-general-tab" data-toggle="pill"
+                                               href="#v-pills-general" role="tab" aria-controls="v-pills-general"
+                                               aria-selected="true">general
+                                            </a>
+                                            <a class="nav-link" id="v-pills-attribut-tab" data-toggle="pill"
+                                               href="#v-pills-attribut" role="tab" aria-controls="v-pills-attribut"
+                                               aria-selected="false">attribut
+                                            </a>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+
+                                        <div class="tab-content" id="v-pills-tabContent">
+                                            <div class="tab-pane fade active show" id="v-pills-general" role="tabpanel"
+                                                 aria-labelledby="v-pills-general-tab">
+
+                                                <div class="form-group">
+                                                    {{ form_row(form.pricePublicTTC) }}
+                                                </div>
+                                                <div class="form-group">
+                                                    {{ form_row(form.priceCeTTC) }}
+                                                </div>
+                                            </div>
+
+                                            <div class="tab-pane fade" id="v-pills-attribut" role="tabpanel"
+                                                 aria-labelledby="v-pills-attribut-tab">
+
+
+                                                <ul class="tags"
+                                                    data-prototype="{{ form_widget(form.productHasAttributeItems.vars.prototype)|e('html_attr') }}">
+                                                    {% for row in form.productHasAttributeItems %}
+                                                        <li>
+                                                            <div class="form-group">
+                                                                {{ form_row(row) }}
+
+                                                            </div>
+
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <button type="button" class="add_item_link btn btn-primary"
+                                                        data-collection-holder-class="tags">Ajouter une valeur
+                                                </button>
+                                                <br> <br>
+
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+
+                {{ form_row(form.send) }}
+
+                <div class="d-none">{{ form_rest(form) }}</div>
+
+                {{ form_end(form ) }}
+            </div>
+        </section>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        jQuery(document).ready(function () {
+
+            $collectionHolder = $('ul.tags');
+
+            // add a delete link to all of the existing tag form li elements
+            $collectionHolder.find('li').each(function () {
+                addTagFormDeleteLink($(this));
+            });
+
+            // Get the ul that holds the collection of tags
+            var $tagsCollectionHolder = $('ul.tags');
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $tagsCollectionHolder.data('index', $tagsCollectionHolder.find('input').length);
+
+            $('body').on('click', '.add_item_link', function (e) {
+                var $collectionHolderClass = $(e.currentTarget).data('collectionHolderClass');
+                // add a new tag form (see next code block)
+                addFormToCollection($collectionHolderClass);
+            })
+        });
+
+
+        function addFormToCollection($collectionHolderClass) {
+            // Get the ul that holds the collection of tags
+            var $collectionHolder = $('.' + $collectionHolderClass);
+
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            var newForm = prototype;
+            // You need this only if you didn't set 'label' => false in your tags field in TaskType
+            // Replace '__name__label__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            // newForm = newForm.replace(/__name__label__/g, index);
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            newForm = newForm.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+            // Add the new form at the end of the list
+            $collectionHolder.append($newFormLi)
+        }
+
+        function addTagFormDeleteLink($tagFormLi) {
+            var $removeFormButton = $('<button class="btn btn-danger" type="button">Supprimer valeur</button> <br> <br>');
+            $tagFormLi.append($removeFormButton);
+
+            $removeFormButton.on('click', function (e) {
+                // remove the li for the tag form
+                $tagFormLi.remove();
+            });
+        }
+
+        $('.select2').select2({})
+    </script>
+
+    <script>
+        $('#product_menus').parent().css("height", "100%");
+        $('#product_menus').css("height", "100%");
+    </script>
+{% endblock %}

@@ -1,0 +1,13 @@
+
+<footer class=" fixed-bottom footer">
+    <div style="margin-top: inherit" class="container">
+        {% if app.user %}
+            {{ footer.content |raw }}
+
+            {% else %}
+                {{ footer.content  |replace({'Tarifs': ''}) |raw  }}
+
+        {% endif %}
+
+    </div>
+</footer>

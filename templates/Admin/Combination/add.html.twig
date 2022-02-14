@@ -1,0 +1,56 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Hello PageController!{% endblock %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Combinaison</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard v1</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="jumbotron">
+                    <ul>
+                        {% for combination in  product.combinations  %}
+                            <li>
+                                <b>{{ combination.attributeItem.attribute.name }} </b> : {{ combination.attributeItem.value }}
+
+                            </li>
+
+                        {% endfor %}
+                    </ul>
+
+                </div>
+                {{ form_start(form) }}
+
+                {{ form_row(form.attributeItem) }}
+                {{ form_row(form.reference) }}
+                {{ form_row(form.pricePublicTTC) }}
+                {{ form_row(form.priceCeTTC) }}
+
+
+
+                {{ form_row(form.send) }}
+                {{ form_end(form) }}
+            </div>
+        </section>
+
+    </div>
+{% endblock %}

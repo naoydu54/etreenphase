@@ -1,0 +1,18 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block content %}
+
+    <main>
+        <div class="container">
+            <h1>Initialiser votre mot de passe</h1>
+
+            {{ form_start(resetForm) }}
+            {{ form_row(resetForm.plainPassword) }}
+            <button class="btn btn-primary">Valider</button>
+            {{ form_end(resetForm) }}
+        </div>
+    </main>
+
+{% endblock %}

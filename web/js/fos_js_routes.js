@@ -1,0 +1,1 @@
+fos.Router.setData({"base_url":"","routes":{"admin_page_ajax_data":{"tokens":[["text","\/admin\/page\/ajaxdata"]],"defaults":[],"requirements":[],"hosttokens":[],"methods":[],"schemes":[]}},"prefix":"","host":"localhost","port":"","scheme":"http","locale":[]});

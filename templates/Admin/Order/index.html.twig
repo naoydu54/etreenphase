@@ -1,0 +1,126 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Commandes{% endblock %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Commandes</h1>
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ path('admin_main') }}">Accueil</a></li>
+                            <li class="breadcrumb-item active">Commandes</li>
+                        </ol>
+
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+
+                <table id="table-list" class="display" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Statuts</th>
+                        <th>Client</th>
+                        <th>Date</th>
+
+                        <th>Action</th>
+
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>id</th>
+                        <th>Statuts</th>
+                        <th>Client</th>
+
+                        <th>Action</th>
+
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+
+
+    <script>
+        var idPage = null;
+
+        var table = $('#table-list').DataTable({
+
+
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+
+            "createdRow": function( row, data, dataIndex){
+
+                if( data['status'] ===  'Nouveau'){
+                    $('td:eq(1)', row).addClass('label  bg-green');
+                }
+                else if(data['status'] ===  'En cours'){
+                    $('td:eq(1)', row).addClass('label  bg-yellow');
+
+                }
+                else if(data['status'] ===  'Expédié'){
+                    $('td:eq(1)', row).addClass('label  bg-purple');
+
+                }
+                else if(data['status'] ===  'Finalisé'){
+                    $('td:eq(1)', row).addClass('label  bg-red');
+
+                }
+                else if(data['status'] ===  'PRE  COMMANDE'){
+                    $('td:eq(1)', row).addClass('label  bg-purple');
+                }
+                },
+
+
+
+            "ajax": Routing.generate('admin_order_ajax_data'),
+            "columns": [
+                { "data": "id" },
+                { "data": "status" },
+                { "data": "company" },
+                { "data": "date" },
+                ],
+
+            'columnDefs': [
+                {
+                    'targets': 4,
+                    'orderable': false,
+                    render: function (full, type, data, meta) {
+                        let html = '<div class="btn-group-datatable">';
+                        html += '<a href="' + Routing.generate('admin_order_view', {'id': data['id'], 'orderType':data['status']}) + '" class="btn btn-primary"><i class="fa pencil-alt"></i> Voir</a>';
+                        html += '</div>';
+                        return html;
+                    }
+                }
+            ]
+        })
+
+
+
+
+
+    </script>
+{% endblock %}

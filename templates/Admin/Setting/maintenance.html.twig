@@ -1,0 +1,8 @@
+{{ form_start(form, {'attr': {"class":'formMaintenance'}}) }}
+
+<div class="valueMainenance d-none" data-maintenance="{{ maintenanceVal.value }}"></div>
+<div class="form-group">
+    {{ form_row(form.maintenance) }}
+</div>
+
+{{ form_end(form) }}

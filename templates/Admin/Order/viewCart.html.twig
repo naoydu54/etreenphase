@@ -1,0 +1,245 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Hello PageController!{% endblock %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Récapitulatif Commande {{ company }}
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ path('admin_main') }}">Accueil</a></li>
+                            <li class="breadcrumb-item "><a href="{{ path('admin_order_main') }}">Commandes</a></li>
+                            <li class="breadcrumb-item active">Commande recapitulatif</li>
+                        </ol>
+
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div style="background-color: rgba(0,0,0,.03)" class="card-header">
+                                <h5>Détail de la commande</h5>
+                            </div>
+                            <div data-orderid="{{ cart.id }}" class="orderId"></div>
+                            <div class="card-body">
+                                <p>
+                                    Référence : <b>{{ cart.id }}</b> <br>
+                                    Date : <b>{{ cart.createddAt|date('d/m/Y') }}</b> <br>
+                                    Statut : <span  class="actualStatus">  PRE COMMANDE</span>
+
+
+                                </p>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+                    <div style="background-color: rgba(0,0,0,.03)" class="card-header">
+                        <h5>
+                            Bon de commande
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nom</th>
+                                <th scope="col">prénom</th>
+                                <th scope="col">Service</th>
+                                <th scope="col">Mode de paiement</th>
+                                <th scope="col">produit</th>
+                                <th scope="col">référence</th>
+                                <th scope="col">quantité</th>
+                                <th scope="col">prix</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr style="background-color: orange">
+                                    <th></th>
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.firstname }}</td>
+                                    <td>{{ user.activity }}</td>
+                                    <td>INCONNU</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                </tr>
+
+                                {% for cartElement in  cart.cartElements %}
+                                    <tr>
+                                        <th></th>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+                                        <td>{{ cartElement.productName }}</td>
+                                        <td>{{ cartElement.productReference }}</td>
+                                        <td>{{ cartElement.quantity }}</td>
+
+                                        <td>{{ cartElement.priceQuantity }} €</td>
+
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>SOUS - TOTAL</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>{{ cart.total }} €</b></td>
+
+
+                                </tr>
+
+
+
+                            <tr>
+                                <td> TOTAL</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><b>{{ cart.total }} €</b></td>
+
+
+                            </tr>
+
+
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+
+        var data = []
+
+
+        function getAllData(){
+            $('.send').each(function (key, value) {
+                if ($(this).prop("checked")) {
+
+
+
+                    data.push({
+                        notSend: $(this).data('id'),
+                        send : null
+                    });
+
+
+                }
+                else{
+                    data.push({
+                        notSend: null ,
+
+                        send: $(this).data('id')
+                    });
+
+
+
+                }
+            })
+
+            return data
+        }
+
+
+
+
+        $('.send').click(function () {
+            console.log(data)
+            getAllData()
+            sendAjax(data)
+            data = [];
+            location.reload()
+
+
+        })
+
+
+        function sendAjax(data) {
+
+            data = JSON.stringify(data)
+            console.log(data)
+
+            $.ajax({
+
+                url: Routing.generate('admin_order_product_send', {'data': data}),
+                type: 'POST',
+                success: function (data) {
+                    console.log(data);
+
+                },
+                error: function (xhr) {
+                }
+            });
+        }
+    </script>
+
+
+    <script>
+        $('.sendStatus').click(function (){
+            var valStatus =  $('#selectStatus option:selected').data('status')
+            var orderId = $('.orderId').data('orderid')
+            console.log(valStatus)
+            $.ajax({
+
+                url: Routing.generate('admin_order_update_order_status', {'orderId': orderId, 'statusId': valStatus}),
+                type: 'POST',
+                success: function (data) {
+                    console.log(data);
+
+                },
+                error: function (xhr) {
+                }
+            });
+        })
+    </script>
+
+
+{% endblock %}

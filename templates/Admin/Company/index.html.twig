@@ -1,0 +1,123 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Hello PageController!{% endblock %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Entreprise  <a href="{{ path('admin_company_add') }}" class="btn btn-primary">Ajouter </a></h1>
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ path('admin_main') }}">Accueil</a></li>
+                            <li class="breadcrumb-item active">Page</li>
+                        </ol>
+
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+
+                <table id="table-list" class="display" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Action</th>
+
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+
+
+    <script>
+        var idPage = null;
+        var table = $('#table-list').DataTable({
+
+
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+
+            "ajax": Routing.generate('admin_company_ajax_data'),
+            "columns": [
+                { "data": "id" },
+                { "data": "name" },
+                ],
+
+            'columnDefs': [
+                {
+                    'targets': 2,
+                    'orderable': false,
+                    render: function (full, type, data, meta) {
+                        let html = '<div class="btn-group-datatable">';
+                        html += '<a href="' + Routing.generate('admin_company_edit', {'id': data['id']}) + '" class="btn btn-default"><i class="fa pencil-alt"></i> Modifier</a>';
+                        html += '<a data-id="'+data['id']+'" href="#" class="btn btn-remove btn-danger"><i class="fa pencil-alt"></i> Supprimer</a>';
+                        html += '<a data-id="'+data['id']+'" href="' + Routing.generate('admin_company_create_user', {'id': data['id']}) + '" class="btn  btn-primary"><i class="fa pencil-alt"></i> Créer compte</a>';
+                        html += '<a data-id="'+data['id']+'" href="' + Routing.generate('admin_company_authorized_menu', {'id': data['id']}) + '" class="btn  btn-default"><i class="fa pencil-alt"></i> Menu autorisés</a>';
+                        html += '<a data-id="'+data['id']+'" href="' + Routing.generate('admin_company_excel', {'id': data['id']}) + '" class="btn  btn-success"><i class="fa pencil-alt"></i> Import Excel</a>';
+                        html += '<a data-id="'+data['id']+'" href="' + Routing.generate('admin_company_user_list', {'companyId': data['id']}) + '" class="btn  btn-primary"><i class="fa pencil-alt"></i>Liste Utilisateur</a>';
+                        html += '</div>';
+                        return html;
+                    }
+                }
+            ]
+        })
+
+
+
+            $('#table-list tbody').on('click', '.btn-remove', function () {
+                var data = table.row( this ).data();
+                console.warn($(this).data('id'))
+
+                companyId=$(this).data('id')
+                modal('.content-header', 'modal-danger', '<h3> Supprimer </h3>', 'Attention, en confirmant la company sera suprimée' )
+
+                $('.confirmation').click(function (){
+                    $.ajax({
+                        url: Routing.generate('admin_company_remove', {'id': companyId}),
+                        type: 'POST',
+                        success: function (data) {
+                            console.log(data);
+                            table.ajax.reload();
+
+                            $('#myModal').modal('hide')
+
+                        },
+                        error: function (xhr) {
+                        }
+                    });
+                })
+
+
+            } );
+
+
+    </script>
+{% endblock %}

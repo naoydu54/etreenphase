@@ -1,0 +1,11 @@
+<h1>Bonjour</h1>
+
+<p>Pour intialiser votre mot de passe, suivez ce lien</p>
+
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+
+<p>Ce lien expire dans  {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+<img style="width: 10%" src="{{ email.image('@images/amf.jpeg') }}" alt="Logo">
+
+<p>Cordialement</p>

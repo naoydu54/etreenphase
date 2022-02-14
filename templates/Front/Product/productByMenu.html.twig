@@ -1,0 +1,210 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}{{ menu.name }}{% endblock %}
+
+{% block content %}
+    <main class="overflow-hidden">
+
+
+        <div class="row">
+            <div class="col-md-12 d-none d-md-block d-lg-block" style="position:relative;">
+                <div class="imgCover">
+                    <img style="width: 100%;  " class="img-fluid"
+                         src="{{ menu.image is not null ? asset('uploads/menu/' ~ menu.image)  : 'http://via.placeholder.com/800x300' }}"
+                         alt="">
+                </div>
+                {% if menu.content %}
+                    <div  class="title-and-desc">
+                        {{ menu.content | raw }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="menu" data-menuid="{{ menu.id }}"></div>
+
+        <div class="dataProd" data-pricemax="{{ products[0].priceMax }}"
+             data-pricemin="{{ products[0].priceMin }}">
+        </div>
+
+
+
+            <div class="row">
+                <div class="col-md-3 col-xs-12">
+                    <div
+                         class="jumbotron filtre overflow-auto">
+                        <center><h3 style="color: white">Filtres</h3></center>
+
+                        <p>
+                            <label style="color: white" for="amount"><b>Tarifs:</b></label>
+                            <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                        </p>
+
+                        <div id="slider-range"></div>
+                        <br>
+
+                        {% for key,  data  in dataFiltre %}
+                            <div class="accordion" id="accordionExample">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button style="color: white" class="btn  btn-block text-left" type="button"
+                                                data-toggle="collapse" data-target="#collapse{{ key }}" aria-expanded="true"
+                                                aria-controls="collapse{{ key }}">
+                                            <b>{{ key }}</b> <i style="color: white" class="fas fa-sort-down"></i>
+
+
+                                        </button>
+                                        <div id="collapse{{ key }}" class="collapse " aria-labelledby="heading{{ key }}"
+                                             data-parent="#accordionExample">
+
+                                            {% for item in  dataFiltre[key] %}
+                                                <div class="form-check">
+
+
+                                                    <input class="form-check-input" data-id="{{ item }}" type="checkbox"
+                                                           value=""
+                                                           id="defaultCheck1">
+                                                    <label class="form-check-label" for="defaultCheck1">
+                                                        <span style="color: white">{{ item }}</span>
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <br>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <div class="col-md-9">
+                    <div style="margin-top: 4%" class="container">
+                        <div class="product"></div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+
+    </main>
+
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+
+        var dataOtherFiltres = [];
+        var dataForAjax = {};
+        var menuId = $('.menu').data('menuid');
+        var priceMin = $('.dataProd').data('pricemin')
+        var priceMax = $('.dataProd').data('pricemax')
+
+
+
+        var checkbox = "input[type='checkbox']"
+        $('.filtre').on('click', checkbox, function () {
+
+
+            if ($(this).prop("checked") == true) {
+                dataOtherFiltres.push($(this).data('id'))
+
+            } else if ($(this).prop("checked") == false) {
+                dataOtherFiltres.splice($.inArray($(this).data('id'), dataOtherFiltres), 1);
+
+            }
+
+
+            dataForAjax['dataOtherFiltres'] = dataOtherFiltres
+
+
+            $.ajax({
+                url: Routing.generate('product_by_menu_ajax', {'id': menuId}),
+                type: 'POST',
+                data: {data: dataForAjax},
+
+                success: function (data) {
+
+                    $('.product').html(data)
+                    dataOtherFiltres = []
+
+                },
+                error: function (xhr) {
+                    console.log('error')
+                }
+            });
+
+        })
+
+
+
+        $.ajax({
+            url: Routing.generate('product_by_menu_ajax', {'id': menuId}),
+            type: 'POST',
+            // data: null,
+
+            success: function (data) {
+
+                $('.product').html(data)
+
+            },
+            error: function (xhr) {
+            }
+        });
+
+        $(function () {
+            $("#slider-range").slider({
+                range: true,
+                min: priceMin,
+                max: priceMax,
+                values: [priceMin, priceMax],
+                slide: function (event, ui) {
+                    $("#amount").val("€" + ui.values[0] + " - €" + ui.values[1]);
+                },
+
+                change: function (event, ui) {
+
+                    var minValue = ui.values[0]
+                    var maxValue = ui.values[1]
+
+                    dataForAjax['minValue'] = minValue
+                    dataForAjax['maxValue'] = maxValue
+
+
+                    $.ajax({
+                        url: Routing.generate('product_by_menu_ajax', {'id': menuId}),
+                        type: 'POST',
+                        data: {data: dataForAjax},
+
+                        success: function (data) {
+
+                            $('.product').html(data)
+
+                        },
+                        error: function (xhr) {
+                            console.log('error')
+                        }
+                    });
+                }
+
+            });
+
+            $("#amount").val("€" + $("#slider-range").slider("values", 0) +
+                " - €" + $("#slider-range").slider("values", 1));
+
+        });
+
+
+    </script>
+{% endblock %}

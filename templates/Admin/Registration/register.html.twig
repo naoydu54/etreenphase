@@ -1,0 +1,47 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ path('admin_main') }}">Accueil</a></li>
+                        <li class="breadcrumb-item active">Utilisateur</li>
+                    </ol>
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+    {% for flashError in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+    {% endfor %}
+
+    <h1>Register</h1>
+
+    {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.username) }}
+
+        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.send) }}
+
+
+
+    {{ form_end(registrationForm) }}
+        </div>
+    </section>
+</div>
+
+{% endblock %}

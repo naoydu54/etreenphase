@@ -1,0 +1,227 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}{{product.name}}{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="container">
+            <div class="content-header"></div>
+            <div class="row">
+
+
+                <div class="{{ product.files |length > 0 ? 'col-md-6' :'col-md-8' }}">
+                    {# <div class="owl-carousel owl-theme"> #}
+                    <div class="h3"> {{ product.name }}</div>
+
+                    <img class="img-thumbnail imgPrincipal"
+                         src="{{ product.image is not null ? asset('uploads/product/' ~ product.id ~ '/' ~ product.image)  : 'http://via.placeholder.com/640x360' }}"
+                         alt="">
+
+                </div>
+
+                {% if product.files |length > 0 %}
+                    <div class="col-md-3">
+                        <div style="margin-top: 35%; margin-bottom: 20%" id="owl-demo" class="owl-carousel ">
+                            {% for file in product.files %}
+
+                                <a class="item link"><img style="" class=" carousel img-thumbnail "
+                                                          src="{{ file.name is not null ? asset('uploads/product/' ~ product.id ~ '/' ~ file.name)  : 'http://via.placeholder.com/640x360' }}"
+                                                          alt=""></a>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                {% endif %}
+
+
+                <div class="col-md-3">
+
+
+                    {% if app.user %}
+
+                        {% if is_granted('ROLE_ADMIN') %}
+                            {{ render(controller('App\\Controller\\Front\\CartController::addItemOnCart', {'productId':product.id})) }}
+                            {% else %}
+                                {{ render(controller('App\\Controller\\Front\\CartController::addItemOnCart', {'productId':product.id})) }}
+
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <a class="btn btn-primary" href="{{ path('app_login') }}">Connectez vous pour ajouter au
+                            panier</a>
+                    {% endif %}
+
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class=" {{ product.useAndMaintenance is not null ?  'col-md-8' : 'col-md-12' }} ">
+                    <div style="margin-top: 5%;" class="jumbotron">
+                        {{ product.content |raw }}
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    {% if product.useAndMaintenance is not null %}
+                        <h5>Utilisation et entretien</h5>
+                        <div class="jumbotron"></div>
+
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                <h3>A découvrir</h3>
+                <div class="row">
+                    {% for product in relatedProducts %}
+
+                        <div style="border-right: 1px solid #cfaf94; margin-bottom:4%" class="col-md-3">
+                            <div class="containerImg">
+                                <a href="{{ path('product_view', {'id': product.id}) }}">
+                                    <img class="img-thumbnail image"
+                                         src="{{ product.image is not null ? asset('uploads/product/' ~ product.id ~ '/' ~ product.image)  : 'http://via.placeholder.com/640x360' }}"
+                                         alt="">
+                                    <b style="color: #cfaf94 !important; ">{{ product.name }}</b>
+                                </a>
+                                <div class="middle">
+                                    <div class="text "><a href="{{ path('product_view', {'id': product.id}) }}"><b>Voir
+                                                le
+                                                produit</b></a></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+
+
+        function updatePriceQuantity() {
+            var selectorQuantity = $('.quantity')
+            var selectorPrice = $('.price')
+            var priceInit = selectorPrice.data('price')
+            var quantity = 1
+            var valueCombination = null
+
+            selectorQuantity.change(function () {
+                selectorPrice.data('price', this.value * priceInit)
+                selectorPrice.html('prix CSE TTC ' + this.value * priceInit + ' €')
+
+                if (this.value == '0') {
+                    selectorPrice.val(1)
+                }
+
+            })
+        }
+
+        updatePriceQuantity()
+
+        $('#selectCombination ').change(function () {
+            console.log(this.value)
+            valueCombination = this.value
+            if (valueCombination === '') {
+                valueCombination = null;
+            }
+            var pricecse = $(this).find(":selected").data('pricecse')
+            var pricepublic = $(this).find(":selected").data('pricepublic')
+            var reference = $(this).find(":selected").data('reference')
+            $('.priceConfigurable').html(' Prix public TTC :  <s>' + pricepublic + ' € </s><br> <br> <div data-price="' + pricecse + '"   class="price"> Prix CSE TTC : ' + pricecse + ' €  </div><br> <br> <br>');
+
+            updatePriceQuantity()
+            if (valueCombination !== null) {
+                $('.reference').html(reference)
+
+
+            } else {
+                var defaultref = $('.defaultref').data('ref')
+                console.log(defaultref)
+                $('.reference').html(defaultref)
+                $('.priceConfigurable').html('');
+
+
+            }
+
+        })
+
+
+        // $('#cart_element_button').on("click",function (e){
+
+
+        // })
+
+        $('#cart_element_button').click(function (e) {
+            valueCombination = $('#selectCombination').find(":selected").data('pricecse')
+            e.preventDefault()
+            $.ajax({
+                url: Routing.generate('cart_add_item', {'productId': $(this).data('id')}),
+                type: 'post',
+                dataType: 'json',
+                data: $('form').serialize(),
+                success: function (data) {
+                    if (valueCombination !== null) {
+                        modal('.content-header', 'modal-success', '<h3> Produit ajouté au panier </h3>', '', 'Continuer mes Achats', 'Voir mon panier')
+
+                        $('.confirmation').on('click', function () {
+                            window.location.href = Routing.generate('cart_view')
+                        })
+
+                        $('.annulation').on('click', function () {
+                            $('#myModal').modal('hide')
+
+                        })
+                    }
+                }
+            });
+        })
+    </script>
+
+    <script>
+        var owl = $('.owl-carousel');
+
+        owl = $('.owl-carousel').owlCarousel({
+            loop: false,
+            margin: 10,
+            nav: true,
+            item: 3,
+            // responsive: {
+            //     0: {
+            //         items: 1
+            //     },
+            //     600: {
+            //         items: 3
+            //     },
+            //     1000: {
+            //         items: 5
+            //     }
+            // }
+        })
+
+
+        $(document).ready(function () {
+
+            $("#owl-demo").owlCarousel({
+                loop: false
+            });
+
+            $('.link img').on('click', function (event) {
+                console.log('a')
+
+                var srcImgClicked = $(this).attr('src')
+                console.log($(this).attr('src'))
+                $('.imgPrincipal').attr('src', srcImgClicked)
+            });
+
+        });
+    </script>
+{% endblock %}

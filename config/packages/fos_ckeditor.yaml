@@ -1,0 +1,38 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+fos_ck_editor:
+
+    configs:
+        my_config_1:
+            language : 'fr'
+            toolbar: "my_toolbar_1"
+            extraPlugins: ["oembed", "btgrid"]
+
+          # ...
+    plugins:
+
+
+      btgrid:
+        path:     "/ckeditor/grid/btgrid/" # with trailing slash
+        filename: "plugin.js"
+
+      oembed:
+        path:     "/ckeditor/oembed/" # with trailing slash
+        filename: "plugin.js"
+
+
+
+    toolbars:
+        configs:
+#            my_toolbar_1: [ "@document", "/", "@link" , "/", "@tool" ]
+            my_toolbar_1:
+                    - [ 'Source', 'Preview','Cut','-', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo', 'Find', 'Replace', 'Scayt','oembed'  ]
+                    - "/"
+                    - [ 'Bold', 'Italic','Underline',  'Strike','Subscript', 'Superscript', '-', 'RemoveFormat' ,'-' ,'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Link', 'Unlink', 'Anchor','Image', 'oembed', 'Table', 'Horizontalrule', 'SpecialChar', 'Smiley', 'Pagebreak', 'Iframe', 'btgrid' ]
+                    - "/"
+
+
+                    - [ "Maximize", 'Styles', 'Format', 'Font', 'FontSize', 'TextColor', 'colordialog' ]

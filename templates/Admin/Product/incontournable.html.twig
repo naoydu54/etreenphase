@@ -1,0 +1,148 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Produit{% endblock %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <form action="#" id="test">
+
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ path('admin_main') }}">Accueil</a></li>
+                            <li class="breadcrumb-item active">Produit</li>
+                        </ol>
+
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+
+                <table id="table-list" class="display" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Référence</th>
+                        <th>Menu</th>
+                        <th>Action</th>
+
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Référence</th>
+                        <th>Menu</th>
+
+
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+            <button class="submit btn btn-primary">envoyer</button>
+
+        </section>
+        </form>
+
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+
+
+    <script>
+        var idPage = null;
+        var table = $('#table-list').DataTable({
+
+
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+
+            "ajax": Routing.generate('admin_product_ajax_data'),
+            "columns": [
+                { "data": "id" },
+                { "data": "name" },
+                { "data": "reference" },
+                { "data": "menu" },
+            ],
+            "stateSave": true,
+
+            'columnDefs': [
+                {
+                    'targets': 4,
+                    'orderable': false,
+                    render: function (full, type, data, meta) {
+                        let html = '<div class="btn-group-datatable">';
+                        html += '<input data-id="'+data['id']+'" class="checkbox" type="checkbox" id="'+data['id']+'" name="scales"  '+data['incontournable']+' >'
+
+                        return html;
+                    }
+                }
+            ]
+        })
+
+
+    </script>
+
+    <script>
+        var data = [];
+
+        var checkbox = "input[type='checkbox']"
+        $('#table-list tbody').on('click', checkbox,  function (){
+
+
+            if($(this).prop("checked") == true){
+                console.log("Checkbox is checked.");
+                data.push($(this).data('id'))
+
+            }
+            else if($(this).prop("checked") == false){
+                console.log("Checkbox is unchecked.");
+                data.splice($.inArray($(this).data('id'), data), 1);
+
+            }
+            console.log($(this).data('id'))
+
+
+            console.log(data)
+
+        })
+
+
+        $('.submit').click(function (e){
+
+            console.log(data)
+            e.preventDefault()
+
+            $.ajax({
+
+                url: Routing.generate('admin_product_update_incontournable', {'data': data}),
+                type: 'POST',
+                success: function (data) {
+                    console.log(data);
+
+                },
+                error: function (xhr) {
+                }
+            });
+        })
+    </script>
+{% endblock %}

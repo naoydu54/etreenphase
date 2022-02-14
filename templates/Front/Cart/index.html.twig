@@ -1,0 +1,308 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="content-header">
+
+        </div>
+        <div class="col-md-12">
+
+        </div>
+        <h1> Mon panier</h1> <br>
+        {% if app.user %}
+
+{#            {% if is_granted('ROLE_EMPLOYEE') %}#}
+
+                {% if cart is  null or cart.cartElements|length ==0 %}
+                    <h3>Votre panier est vide</h3>
+
+                {% else %}
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Produit</th>
+                                <th scope="col">Référence</th>
+                                <th scope="col">Quantité</th>
+                                <th scope="col">Prix</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for cartElement in   cart.cartElements %}
+                                <tr>
+                                    <th scope="row">
+
+                                        <a href="{{ path('product_view', {'id': cartElement.product.id}) }}"> <img
+                                                    style="width: 20%" class="img-thumbnail"
+                                                    src="{{ cartElement.productImage is not null ? asset('uploads/product/' ~ cartElement.productImage)  : 'http://via.placeholder.com/40x40' }}"
+                                                    alt=""></a>
+
+                                    </th>
+                                    <td>
+                                        <a href="{{ path('product_view', {'id': cartElement.product.id}) }}">{{ cartElement.productName }}</a>
+                                    </td>
+                                    <td>{{ cartElement.productReference }}</td>
+                                    <td><input class="quantity" min="1" data-id="{{ cartElement.id }}"
+                                               style="width: 80%"
+                                               type="number" value="{{ cartElement.quantity }}"></td>
+                                    <td>{{ cartElement.priceQuantity }} €</td>
+                                    <td>
+                                        <button data-id="{{ cartElement.id }}" class="btn btn-danger btn-remove">
+                                            Supprimer
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>SOUS - TOTAL</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ cart.total }} €</td>
+
+                            </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{ form_start(form) }}
+                    {# {{ form_row(form.name) }} #}
+
+                    {{ form_end(form) }} <br>
+                {% endif %}
+{#            {% else %}#}
+
+{#                {% for cart in carts %}#}
+{#                    <table class="table">#}
+{#                        <thead>#}
+
+{#                        <tr>#}
+{#                            <th scope="col">#</th>#}
+{#                            <th scope="col">Nom</th>#}
+{#                            <th scope="col">prénom</th>#}
+{#                            <th scope="col">Service</th>#}
+{#                            <th scope="col">Mode de paiement</th>#}
+{#                            <th scope="col">produit</th>#}
+{#                            <th scope="col">référence</th>#}
+{#                            <th scope="col">quantité</th>#}
+{#                            <th scope="col">prix</th>#}
+{#                        </tr>#}
+{#                        </thead>#}
+{#                        <tbody>#}
+{#                        {% for cartElement in  cart.cartElements %}#}
+{#                            <tr style="background-color: orange">#}
+{#                                <th></th>#}
+{#                                <td>{{ cart.name }}</td>#}
+{#                                <td>{{ cart.firstname }}</td>#}
+{#                                <td>{{ cart.activity }}</td>#}
+{#                                <td>{{ cart.paiement }}</td>#}
+{#                                <td></td>#}
+{#                                <td></td>#}
+{#                                <td></td>#}
+{#                                <td></td>#}
+{#                                <td></td>#}
+
+{#                            </tr>#}
+
+{#                            <tr>#}
+{#                                <th></th>#}
+{#                                <td></td>#}
+{#                                <td></td>#}
+{#                                <td></td>#}
+{#                                <td></td>#}
+{#                                <td>#}
+{#                                    <a href="{{ path('product_view', {'id':cartElement.product.id}) }}">{{ cartElement.productName }}</a>#}
+{#                                </td>#}
+{#                                <td>{{ cartElement.productReference }}</td>#}
+{#                                <td>{{ cartElement.quantity }}</td>#}
+
+{#                                <td>{{ cartElement.priceQuantity }} €</td>#}
+
+{#                            </tr>#}
+{#                        {% endfor %}#}
+{#                        <tr>#}
+{#                            <td> TOTAL</td>#}
+{#                            <td></td>#}
+{#                            <td></td>#}
+{#                            <td></td>#}
+{#                            <td></td>#}
+{#                            <td></td>#}
+{#                            <td></td>#}
+{#                            <td></td>#}
+{#                            <td><b>{{ cart.total }} €</b></td>#}
+
+
+{#                        </tr>#}
+
+
+{#                        #}{# <tr> #}
+{#                        #}{# <td> TOTAL</td> #}
+{#                        #}{# <td></td> #}
+{#                        #}{# <td></td> #}
+{#                        #}{# <td></td> #}
+{#                        #}{# <td></td> #}
+{#                        #}{# <td></td> #}
+{#                        #}{# <td></td> #}
+{#                        #}{# <td></td> #}
+{#                        #}{# <td><b>{{ globalTotal }} €</b></td> #}
+
+
+{#                        #}{# </tr> #}
+{#                        </tbody>#}
+{#                    </table>#}
+{#                    {% set companyId = app.user.company.id %}#}
+
+{#                    <a class="btn btn-primary"#}
+{#                       href="{{ path('order_add', {'cartId': cart.id, 'companyId':companyId}) }}">Envoyer La#}
+{#                        commande</a>#}
+{#                    <br><br><br><br>#}
+{#                {% endfor %}#}
+
+
+                {# {% for cart  in  carts %} #}
+                {# <tr style="background-color: orange"> #}
+                {# <th></th> #}
+                {# <td>{{ cart.name }}</td> #}
+                {# <td>{{ cart.firstname }}</td> #}
+                {# <td>{{ cart.activity }}</td> #}
+                {# <td>{{ cart.paiement }}</td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+
+                {# </tr> #}
+
+                {# {% for cartElement in  cart.cartElements %} #}
+                {# <tr> #}
+                {# <th></th> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td> #}
+                {# <a href="{{ path('product_view', {'id':cartElement.product.id}) }}">{{ cartElement.productName }}</a> #}
+                {# </td> #}
+                {# <td>{{ cartElement.productReference }}</td> #}
+                {# <td>{{ cartElement.quantity }}</td> #}
+
+                {# <td>{{ cartElement.priceQuantity }} €</td> #}
+
+                {# </tr> #}
+                {# {% endfor %} #}
+                {# <tr> #}
+                {# <td>SOUS - TOTAL</td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td><b>{{ cart.total }} €</b></td> #}
+
+
+                {# </tr> #}
+
+                {# {% endfor %} #}
+
+
+                {# <tr> #}
+                {# <td> TOTAL</td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td></td> #}
+                {# <td><b>{{ globalTotal }} €</b></td> #}
+
+
+                {# </tr> #}
+
+
+                {# </tbody> #}
+                {# </table> #}
+
+                {# {% set companyId = app.user.company.id %} #}
+                {# <a class="btn btn-primary" href="{{ path('order_add', {'companyId':companyId}) }}">Envoyer La #}
+                {# commande</a> #}
+{#            {% endif %}#}
+
+        {% else %}
+            <a href="{{ path('app_login') }}">Connexion</a>
+
+        {% endif %}
+
+    </div>
+
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+
+        $('.table').on('click', '.btn-remove', function () {
+
+
+            var content = $(this);
+            cartElementId = $(this).data('id')
+            modal('.content-header', 'modal-danger', '<h3> Supprimer </h3>', 'Attention, en confirmant le produit sera suprimé')
+
+            $('.confirmation').click(function () {
+                $.ajax({
+                    url: Routing.generate('cart_remove', {'id': cartElementId}),
+                    type: 'POST',
+
+                    success: function (data) {
+                        console.log(data);
+
+                        var cartview = Routing.generate('cart_view')
+                        console.warn(cartview.lo)
+                        location.reload()
+
+                    },
+                    error: function (xhr) {
+                    }
+                });
+            })
+
+
+        });
+
+
+        $('.quantity').change(function () {
+            console.log(this.value)
+            var quantity = this.value
+            var productId = $(this).data('id');
+            $.ajax({
+                url: Routing.generate('cart_quantity', {'id': productId, 'quantity': quantity}),
+                type: 'POST',
+
+                success: function (data) {
+                    console.log(data);
+
+
+                    location.reload()
+
+                },
+                error: function (xhr) {
+                }
+            });
+        })
+    </script>
+{% endblock %}

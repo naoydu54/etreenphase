@@ -1,0 +1,27 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block content %}
+
+    <main>
+        <div class="container">
+            {% for flashError in app.flashes('reset_password_error') %}
+                <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+            {% endfor %}
+            <h1>Initialisation de votre mot de passe</h1>
+
+            {{ form_start(requestForm) }}
+            {{ form_row(requestForm.email) }}
+            <div>
+                <small>
+                   Entrer votre adresse mail et vous recevrez un mail contenant un lien d'initisalition du mot de passe
+                </small>
+            </div>
+
+            <button class="btn btn-primary">Confirmer</button>
+            {{ form_end(requestForm) }}
+        </div>
+    </main>
+
+{% endblock %}

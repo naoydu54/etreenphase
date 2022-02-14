@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+</head>
+<style>
+
+</style>
+<body>
+
+
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-xs-4">
+
+            <img src="{{ absolute_url(asset('logo/amf.jpeg')) }}" alt="">
+
+
+        </div>
+
+        <div class="col-xs-4 col-xs-offset-4">
+            <h3>Bon de commande</h3>
+            <b> Ref {{ order.id }}</b> <br>
+            Date : 21/04/2021
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-5">
+       <div class="well">
+           <b>Emetteur</b><br>
+           Alliance Manufactures de France
+           <br>
+           28 rue des clous
+           <br>
+           88350 PARGNY SOUS MUREAU
+
+       </div>
+        </div>
+        <div class="col-xs-5 col-xs-offset-2">
+            <div class="well">
+                <b>Adressé à </b> <br>
+                {{ order.company.name }} <br>
+              
+            </div>
+        </div>
+    </div>
+    <br><br> <br>
+
+    <table class="table">
+        <thead>
+
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nom</th>
+            <th scope="col">prénom</th>
+            <th scope="col">adresse</th>
+            <th scope="col">Service</th>
+            <th scope="col">Mode de paiement</th>
+            <th scope="col">produit</th>
+            <th scope="col">référence</th>
+            <th scope="col">quantité</th>
+            <th scope="col">prix</th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+            <tr style="background-color: orange">
+                <th></th>
+                <td>{{ cart.name }}</td>
+                <td>{{ cart.firstname }}</td>
+                <td>{{ cart.address }}</td>
+                <td>{{ cart.activity }}</td>
+                <td>{{ cart.paiement }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr>
+
+            {% for cartElement in  cart.cartElements %}
+                <tr>
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ cartElement.productName }}</td>
+                    <td>{{ cartElement.productReference }}</td>
+                    <td>{{ cartElement.quantity }}</td>
+
+                    <td>{{ cartElement.priceQuantity }} €</td>
+
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>TOTAL</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>{{ cart.total }} €</b></td>
+
+
+            </tr>
+
+
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+
+</html>
+

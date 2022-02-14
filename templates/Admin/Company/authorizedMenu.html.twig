@@ -1,0 +1,76 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Hello PageController!{% endblock %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Menu autorisé</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard v1</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div id="jstree"></div>
+
+                <button class="btn btn-primary submit">submit</button>
+
+            </div>
+        </section>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+        var company = {{ company }}
+ var $data = null
+        $('#jstree').jstree({
+            "plugins" : [ "wholerow", "checkbox" ],
+            'core' : {
+                'data': {
+                    url: Routing.generate('admin_company_ajaxmenu', {'companyId': company}),
+                    'data': function (node) {
+                        return {'id': node.id};
+                    }
+                }
+            }
+            });
+
+        $('#jstree').on("changed.jstree", function (e, data) {
+
+            console.log(data.selected)
+            $datas = data.selected
+        });
+
+        $('.submit').click(function (){
+            $.ajax({
+                url: Routing.generate('admin_company_ajax_update_menu', {'companyId': company, 'datas':$datas}),
+                type: 'POST',
+                success: function (data) {
+                    console.log(data);
+
+                },
+                error: function (xhr) {
+                }
+            });
+        })
+
+    </script>
+{% endblock %}

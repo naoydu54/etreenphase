@@ -1,0 +1,80 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block content %}
+
+    <main>
+        <div class="container">
+
+            <div class="content-header"></div>
+            <h2>Liste des salariées</h2>
+            <a class="btn btn-primary" href="{{ path('cse_addemployee') }}">Ajouter salarié</a>
+            <a class="btn btn-success"  data-toggle="tooltip" data-placement="top" title="A envoyer par mail" href="{{ asset('import.xlsx') }} ">Importation via fichier excel</a> <br> <br>
+
+            {% for message in app.flashes('notice') %}
+                <div class="flash-notice alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Activité</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+
+
+
+            {% for employee in employees %}
+                <tr>
+                    <th scope="row"></th>
+                    <td>{{ employee.name }}</td>
+                    <td>{{ employee.firstName }}</td>
+                    <td>{{ employee.activity }}</td>
+                    <td>
+                        <a href="{{ path('cse_edituser',{'id': employee.id}) }}" class="btn btn-primary">Editer</a>
+                        <button data-id="{{ employee.id }}" class="btn btn-remove btn-danger">Supprimer</button>
+                    </td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+
+
+{% endblock %}
+{% block js %}
+
+    <script>
+        $('.btn-remove').click(function (){
+            var id =  $(this).data('id')
+            console.warn('test')
+
+            modal('.content-header', 'modal-danger', '<h3> Supprimer </h3>', 'Attention, en confirmant l\'utilisateur sera supprimé définitivement' )
+            $('.confirmation').click(function (){
+                $.ajax({
+                    url: Routing.generate('cse_removeuser', {'id': id}),
+                    type: 'POST',
+                    success: function (data) {
+                        location.reload();
+
+                        $('#myModal').modal('hide')
+
+                    },
+                    error: function (xhr) {
+                    }
+                });
+            })
+        })
+    </script>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block content %}
+
+<main>
+    <div class="container">
+        <p>
+            Un mail a été envoyé contenant un lien cliquable pour intialiser le mot de passe.
+            Ce lien sera expiré dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+
+        </p>
+        <p>Si le mail n'a pas été reçu , vérifier vos spams sinon <a href="{{ path('app_forgot_password_request') }}">réessayer</a>.</p>
+    </div>
+</main>
+
+{% endblock %}

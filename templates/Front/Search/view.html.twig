@@ -1,0 +1,63 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}Recherche{% endblock %}
+
+{% block content %}
+
+    <main>
+
+
+                <div class="container">
+
+                    {% if app.user %}
+                    <div class="row">
+                        {% for product  in products %}
+
+                            <div style="border-right: 1px solid #cfaf94; margin-bottom:4%" class="col-md-3">
+                                <div class="containerImg">
+
+                                    <a href="{{ path('product_view', {'id': product.id}) }}">
+                                        <img class="img-thumbnail image"
+                                             src="{{ product.image is not null ? asset('uploads/product/'  ~ product.id ~ '/'~ product.image)  : 'http://via.placeholder.com/640x360' }}"
+                                             alt="">
+                                        <b style="color: #cfaf94 !important; ">{{ product.name }}</b>
+                                    </a>
+
+                                    <div class="middle">
+                                        <div class="text "><a href="{{ path('product_view', {'id': product.id}) }}"><b>Voir le produit</b></a></div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+        {% else %}
+
+        <center>
+            <a style="color: red" href="{{ path('app_login') }}">
+                Merci de vous connecter pour effectuer une recherche <br>
+                <b>Connection</b>
+            </a>
+        </center>
+
+        {% endif %}
+
+
+
+
+    </main>
+
+
+
+{% endblock %}
+
+{% block js %}
+
+
+{% endblock %}

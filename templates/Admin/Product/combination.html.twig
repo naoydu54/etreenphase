@@ -1,0 +1,51 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Combinaison{% endblock %}
+
+{% block content %}
+
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="container-fluid">
+
+                {% for key,  combination in  groupedCombinations %}
+
+                    <b>{{ key }}</b> <br>
+                    {% for item in combination %}
+                        {{ item }} <br>
+                    {% endfor %}
+                    <br><br><br>
+
+                {% endfor %}
+                <!-- Main content -->
+                <section class="content">
+                    <div class="container-fluid">
+                        {{ form_start(form) }}
+
+                        <div class="row">
+
+                            <div class="col-md-9">
+
+                                {{ form_row(form.attributeItem) }}
+                                {{ form_row(form.reference) }}
+                                {{ form_row(form.pricePublicTTC) }}
+                                {{ form_row(form.priceCeTTC) }}
+
+
+                            </div>
+
+                        </div>
+
+
+                        {{ form_row(form.send) }}
+
+                        <div class="d-none">{{ form_rest(form) }}</div>
+
+                        {{ form_end(form ) }}
+                    </div>
+                </section>
+            </div>
+        </section>
+    </div>
+
+{% endblock %}

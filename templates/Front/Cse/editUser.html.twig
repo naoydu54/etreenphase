@@ -1,0 +1,40 @@
+{% extends 'Front/layout.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block content %}
+
+    <main>
+        <div class="container">
+
+            {{ form_start(form) }}
+
+            <div class="form-group">
+                {{ form_row(form.name) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.firstName) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.email) }}
+            </div>
+
+
+
+            <div class="form-group">
+                {{ form_row(form.activity) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.send) }}
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
+    </main>
+
+
+{% endblock %}

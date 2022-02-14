@@ -1,0 +1,29 @@
+
+<div class="row">
+    {% for tutorialsAndRecipe  in tutorialsAndRecipes %}
+
+        <div style="border-right: 1px solid #cfaf94; margin-bottom:4%" class="col-md-3">
+            <div class="containerImg">
+
+                <a href="#">
+                    <img class="img-thumbnail image"
+                         src="{{ tutorialsAndRecipe.image is not null ? asset('uploads/tutorialAndRecipe/' ~ tutorialsAndRecipe.image)  : 'http://via.placeholder.com/640x360' }}"
+                         alt="">
+                    <b style="color: #cfaf94 !important; ">{{ tutorialsAndRecipe.title }}</b>
+                </a>
+
+                <div class="middle">
+                    <div class="text "><a href="#"><b>Voir </b></a></div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+

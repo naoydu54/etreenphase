@@ -1,0 +1,168 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Produit{% endblock %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Produits</h1> <br>
+
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Ajouter Produit
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a  href="{{ path('admin_product_add', {'configurable':0}) }}" class=" dropdown-item">Ajouter </a>
+                                <a href="{{ path('admin_product_add', {'configurable': 1}) }}" class="dropdown-item">Ajouter produit configurable </a>
+
+                            </div>
+                        </div>
+{#                        <h1 class="m-0">Produit  <a href="{{ path('admin_product_add', {'configurable':0}) }}" class="btn btn-primary">Ajouter </a></h1>#}
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ path('admin_main') }}">Accueil</a></li>
+                            <li class="breadcrumb-item active">Produit</li>
+                        </ol>
+
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+
+                <table id="table-list" class="display" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Référence</th>
+                        <th>Menu</th>
+                        <th>Action</th>
+
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Référence</th>
+                        <th>Menu</th>
+
+
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+
+
+    <script>
+        var idPage = null;
+        var table = $('#table-list').DataTable({
+
+
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+
+            "ajax": Routing.generate('admin_product_ajax_data'),
+            "columns": [
+                { "data": "id" },
+                { "data": "name" },
+                { "data": "reference" },
+                { "data": "menu" },
+            ],
+            "stateSave": true,
+
+            'columnDefs': [
+                {
+                    'targets': 4,
+                    'orderable': false,
+                    render: function (full, type, data, meta) {
+                        console.log(data)
+                        let html = '<div class="btn-group-datatable">';
+                        html += '<a href="' + Routing.generate('admin_product_edit', {'id': data['id']}) + '" class="btn btn-default"><i class="fa pencil-alt"></i> Modifier</a>';
+                        html += '<a data-id="'+data['id']+'" href="#" class="btn clone btn-primary"><i class="fa pencil-alt"></i> Clone</a>';
+                        if(data['configurable']===true){
+                            html += '<a href="' + Routing.generate('admin_combination_main', {'productId': data['id']}) + '" class="btn btn-default"><i class="fa pencil-alt"></i> Combinaison</a>';
+
+                        }
+
+                        html += '<a data-id="'+data['id']+'" href="#" class="btn btn-remove btn-danger"><i class="fa pencil-alt"></i> Supprimer</a>';
+                        html += '</div>';
+                        return html;
+                    }
+                }
+            ]
+        })
+
+
+
+        $('#table-list tbody').on('click', '.btn-remove', function () {
+            var data = table.row( this ).data();
+            console.warn($(this).data('id'))
+
+            productId=$(this).data('id')
+            modal('.content-header', 'modal-danger', '<h3> Supprimer </h3>', 'Attention, en confirmant le produit sera suprimé' )
+
+            $('.confirmation').click(function (){
+                $.ajax({
+                    url: Routing.generate('admin_product_remove', {'id': productId}),
+                    type: 'POST',
+                    success: function (data) {
+                        console.log(data);
+                        table.ajax.reload();
+
+                        $('#myModal').modal('hide')
+
+                    },
+                    error: function (xhr) {
+                    }
+                });
+            })
+
+
+        } );
+
+        $('#table-list tbody').on('click', '.clone', function () {
+            var data = table.row( this ).data();
+            console.warn($(this).data('id'))
+
+            productId=$(this).data('id')
+            $.ajax({
+                url: Routing.generate('admin_product_duplicate', {'id': productId}),
+                type: 'POST',
+                success: function (data) {
+                    console.log(data);
+                    table.ajax.reload();
+
+                    $('#myModal').modal('hide')
+
+                },
+                error: function (xhr) {
+                }
+            });
+
+
+        } );
+
+
+    </script>
+{% endblock %}

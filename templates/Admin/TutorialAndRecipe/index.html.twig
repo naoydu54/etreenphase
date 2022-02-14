@@ -1,0 +1,120 @@
+{% extends 'Admin/layout.html.twig' %}
+
+{% block title %}Hello PageController!{% endblock %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Tutoriels et recettes  <a href="{{ path('admin_tutorial_recipe_add') }}" class="btn btn-primary">Ajouter </a></h1>
+
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ path('admin_main') }}">Accueil</a></li>
+                            <li class="breadcrumb-item active">Tutoriels et recettes</li>
+                        </ol>
+
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+
+                <table id="table-list" class="display" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Action</th>
+
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Action</th>
+
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+
+
+    <script>
+        var idTutorialAndRecipe = null;
+        var table = $('#table-list').DataTable({
+
+
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+            },
+
+            "ajax": Routing.generate('admin_tutorial_recipe_ajax_data'),
+            "columns": [
+                { "data": "id" },
+                { "data": "name" },
+                ],
+
+            'columnDefs': [
+                {
+                    'targets': 2,
+                    'orderable': false,
+                    render: function (full, type, data, meta) {
+                        let html = '<div class="btn-group-datatable">';
+                        html += '<a href="' + Routing.generate('admin_tutorial_recipe_edit', {'id': data['id']}) + '" class="btn btn-default"><i class="fa pencil-alt"></i> Modifier</a>';
+                        html += '<a data-id="'+data['id']+'" href="#" class="btn btn-remove btn-danger"><i class="fa pencil-alt"></i> Supprimer</a>';
+                        html += '</div>';
+                        return html;
+                    }
+                }
+            ]
+        })
+
+
+
+            $('#table-list tbody').on('click', '.btn-remove', function () {
+                var data = table.row( this ).data();
+                console.warn($(this).data('id'))
+
+                tutorialAndRecipeId=$(this).data('id')
+                modal('.content-header', 'modal-danger', '<h3> Supprimer </h3>', 'Attention, en confirmant la recette sera suprimée' )
+
+                $('.confirmation').click(function (){
+                    $.ajax({
+                        url: Routing.generate('admin_tutorial_recipe_remove', {'id': tutorialAndRecipeId}),
+                        type: 'POST',
+                        success: function (data) {
+                            console.log(data);
+                            table.ajax.reload();
+
+                            $('#myModal').modal('hide')
+
+                        },
+                        error: function (xhr) {
+                        }
+                    });
+                })
+
+
+            } );
+
+
+    </script>
+{% endblock %}

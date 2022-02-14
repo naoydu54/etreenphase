@@ -1,0 +1,70 @@
+{% if product.configurable ==0 %}
+    Ref: {{ product.reference }}<br>
+{% else %}
+    <div class="reference">
+    </div>
+{% endif %}
+
+<div  class="defaultref" data-ref="{{ product.reference }}"></div>
+
+{{ form_start(form, {'action': path('cart_add_item', {'productId': product.id})}) }}
+
+
+            {% for key,  combination in  groupedCombinations %}
+
+                <b>{{ key }}</b> <br>
+                <div class="form-group">
+
+
+                    <select id="selectCombination" required class="form-control" name="select_combination"
+                            class="form-select"
+                            aria-label="Default select example">
+                        <option value=""></option>
+
+                        {% for item in combination %}
+                            <option  data-reference="{{ item.reference }}" data-pricecse="{{ item.priceCSE }}" data-pricepublic="{{ item.pricePublic }}"
+                                    value="{{ item.combinationId}}">{{ item|first }}</option>
+                        {% endfor %}
+                        <br><br><br>
+                    </select>
+                </div>
+            {% endfor %}
+
+
+
+
+
+
+
+    {% if product.configurable %}
+        <div class="priceConfigurable">
+        </div>
+
+        {% if product.available %}
+            <div class="{{ is_granted('ROLE_ADMIN') != true ? '' :'d-none' }}">
+                {{ form_row(form.button, {'attr':{'data-id': product.id}}) }}  <br> <br>
+
+            </div>
+            {% else %}
+            <b style="color:red">Produit non disponbile</b>
+        {% endif %}
+
+
+    {% else %}
+        <s>Prix public TTC : {{ product.pricePublicTTC }} €</s> <br>
+        <div data-price="{{ product.priceCeTTC }}" class="price"> Prix CSE TTC : {{ product.priceCeTTC }} € <br> <br></div>
+        <div class="{{ is_granted('ROLE_ADMIN') != true ? '' :'d-none' }}">
+            {{ form_row(form.button, {'attr':{'data-id': product.id}}) }}  <br> <br>
+        </div>
+    {% endif %}
+
+{% if is_granted('ROLE_ADMIN') %}
+    <p style="color: red">Impossible de commander en compte administrateur</p>
+{% endif %}
+
+
+
+<div class="d-none">{{ form_rest(form) }}</div>
+{{ form_end(form) }}
+
+Pour plus de 100 demandes, <a href="#contact">contactez nous</a>
