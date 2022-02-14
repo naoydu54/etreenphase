@@ -4,10 +4,10 @@ namespace Deployer;
 require 'recipe/symfony4.php';
 
 // Project name
-set('application', 'amf');
+set('application', 'etreenphase');
 
 // Project repository
-set('repository', 'git@github.com:naoydu54/amf.git');
+set('repository', 'git@github.com:naoydu54/etreenphase.git');
 
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', false);
@@ -40,7 +40,7 @@ host('production')
     ->stage('production')
     ->set('branch', 'master')
     ->forwardAgent(true)
-    ->set('deploy_path', '/var/www/vhosts/boutique-cse-amf.fr/httpdocs');
+    ->set('deploy_path', '/var/www/vhosts/etreenphase.conceptsiteweb.com/httpdocs');
 
 
 //task('app:chown', function () {
@@ -50,14 +50,14 @@ task('app:chown', function () {
     run('cd {{deploy_path}} && chown -R sysuser_5:psacln .');
 });
 
-task('app:backup', function (){
-    run('cd /home/backup/amf/sql && mysqldump -uamf -pU_le30e0 amf >  amf_$(date "+%b_%d_%Y_%H_%M_%S").sql ');
-
-});
-task('app:backupFile', function (){
-    run('cp -R {{deploy_path}}/shared/ /home/backup/amf/file/$(date "+%b_%d_%Y_%H_%M_%S")');
-
-});
+//task('app:backup', function (){
+//    run('cd /home/backup/amf/sql && mysqldump -uamf -pU_le30e0 amf >  amf_$(date "+%b_%d_%Y_%H_%M_%S").sql ');
+//
+//});
+//task('app:backupFile', function (){
+//    run('cp -R {{deploy_path}}/shared/ /home/backup/amf/file/$(date "+%b_%d_%Y_%H_%M_%S")');
+//
+//});
 
 task('app:chown', function () {
     run('cd {{deploy_path}} && chown -R sysuser_5:psacln .');
@@ -79,8 +79,8 @@ task('app:ckeditorLink', function () {
 after('deploy:failed', 'deploy:unlock');
 
 // Migrate database before symlink new release.
-before('database:migrate', 'app:backup');
-after('app:backup', 'app:backupFile');
+//before('database:migrate', 'app:backup');
+//after('app:backup', 'app:backupFile');
 
 before('deploy:symlink', 'database:migrate');
 before('deploy:symlink', 'app:chown');
